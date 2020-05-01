@@ -7,7 +7,7 @@
 
 ![注册界面](./img/register.png )
 
-![聊天界面](./img/chat.png )
+![聊天界面](https://github.com/Zero-GGZ/MyChat/blob/master/img/chat.png)
 
 
 ### 说明
