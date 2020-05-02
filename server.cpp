@@ -142,17 +142,17 @@ void pre_process_data(char *buf)        //传过来的buf已经是字符串了
     cout <<user.message<<endl;
 }
 
-void tcp_send_data()		//专门读取管道的线程，用来去读发往用户的数据
+void tcp_send_data()
 {
     int n_read;
     char buf_send[1024];
     while(1)
     {
-        n_read=read(fifo_fd,buf_send,1024);
+         n_read=read(fifo_fd,buf_send,1024);
         if(n_read>0)
         {
             buf_send[n_read]='\0';
-            // cout <<"aaaaaa:"<<buf_send<<endl;
+            cout <<"aaaaaa:"<<buf_send<<endl;
             send(client_fd,buf_send,n_read+1,0);
         }
     }
@@ -168,12 +168,12 @@ int init_server()   //绑定ip和端口等
 		exit(1);
 	
 	}
+   
     /*config the pamater about sockaddr_in*/
 	server_sockaddr.sin_family = AF_INET;
 	server_sockaddr.sin_port = htons(PORT);
 	server_sockaddr.sin_addr.s_addr = INADDR_ANY;
 	bzero(&(server_sockaddr.sin_zero),8);
-	
 	if(bind(sockfd,(struct sockaddr*)&server_sockaddr,
 					sizeof(struct sockaddr)) == -1)
 	{
@@ -188,6 +188,8 @@ int init_server()   //绑定ip和端口等
 		exit(1);
 	}
     cout << "Listening...."<<endl;
+    
+    // char buf_send[1024];
     char buf_rev[1024];
     int recvbytes;
     while(1)
@@ -197,6 +199,7 @@ int init_server()   //绑定ip和端口等
                 (struct sockaddr*)&client_sockaddr,(socklen_t*)&sin_ssize)) == -1)
         {
             cout << "accept  faild"<<endl;
+            // continue;
         }
 
         if(fork()==0)	//子进程 
@@ -211,37 +214,64 @@ int init_server()   //绑定ip和端口等
                 cout << buf_rev<<endl;      //可分别对账号密码提取，实现密码登录
                 pre_process_data(buf_rev);
             }
+            //验证密码和账户 在此对login 和register进行处理
             string fifo_path="/tmp/"+user.id;
             //用户上线就创建自己的接收管道，当写入管道不存在说明此用户不存在
-            if(mkfifo(fifo_path.c_str(),O_CREAT|O_EXCL)<0)
-                cout<<"can't creat fifo"<<endl;
+            if((access(fifo_path.c_str(),F_OK))==-1)    //fifo不存在则创建
+            {
+                if(mkfifo(fifo_path.c_str(),O_CREAT|O_EXCL)<0)
+                    cout<<"can't creat fifo"<<endl;
+            }
+            else
+            {
+                cout << "user fifo exist"<<endl;
+            }
             /*读取自己ID对应管道的数据*/
             // fifo_fd=open(fifo_path.c_str(),O_RDONLY|O_NONBLOCK);      //打开自己的管道
             fifo_fd=open(fifo_path.c_str(),O_RDONLY|O_NONBLOCK);      //打开自己的管道
             if(fifo_fd<0)
                 cout <<"open fifo faild"<<endl;
-            thread t(tcp_send_data);    //创建tcp数据发送线程 编译需要加上-std=c++11
+            thread t(tcp_send_data);    //创建tcp数据接收线程 编译需要加上-std=c++11
             while(1)
-            {                
+            {  
                 recvbytes = recv( client_fd,buf_rev,BUFFER_SIZE,MSG_DONTWAIT);   //非阻塞接收，消息轮询
+                /*设定数据格式，user_ID+des_ID+数据*/
                 if(recvbytes>0)
                 {
+                    //写入des_ID的管道
                     buf_rev[recvbytes]='\0';
                     pre_process_data(buf_rev);
                     cout << "des_user:"+user.des_id<<endl <<"message:"+user.message<<endl;
                     //打开对应用户的管道，将数据写入
                     string des_fifo_path="/tmp/"+user.des_id;   //合成目的用户管道路径
-                    int des_fifo_fd=open(des_fifo_path.c_str(),O_WRONLY);      //打开目的用户的管道
-                    cout <<des_fifo_path<<endl;
-                    if(des_fifo_fd<0)
+                    int des_fifo_fd;
+                    if(user.opration=="chat")
                     {
-                        cout <<"open des fifo faild"<<endl;
-                        send(client_fd,"user have not login data can not send",38,0);	//用户没登陆无法写入管道
+                        if((access(des_fifo_path.c_str(),F_OK))!=-1)
+                        {
+                            int times=0;
+                            while (times<99)   //管道文件存在,99次打不开说明管道文件有问题
+                            {
+                                des_fifo_fd=open(des_fifo_path.c_str(),O_WRONLY|O_NONBLOCK);      //打开目的用户的管道
+                                if(des_fifo_fd<0)
+                                        cout <<"open des fifo faild"<<endl;
+                                else
+                                {
+                                    break;
+                                }
+                                times++;
+                            }
+                            if(times==100)
+                                cout << "des fifo erro,I have tried 99 times"<<endl;
+                        }
+                        else
+                        {
+                            cout <<"des id fifo is not exist"<<endl;
+                            send(client_fd,"you friend have not login data can not send",44,0);
+                        }
                     }
-                    else
-                    {
-                        write(des_fifo_fd,user.message.c_str(),user.message.length());//将消息写入管道
-                    }
+                    write(des_fifo_fd,user.message.c_str(),user.message.length());//将消息写入管道
+                   
                     close(des_fifo_fd);
                 }
             }
@@ -254,6 +284,7 @@ int init_server()   //绑定ip和端口等
             close(client_fd);
         }
     }
+
 }
 
 int main(void)
