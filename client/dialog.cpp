@@ -60,7 +60,7 @@ void Dialog::on_register_Button_clicked()
     {
          qDebug("Connected!");
          this->dis=connect(global_user.socket, &QTcpSocket::readyRead, this, &Dialog::socket_Read_Data);
-         string message=to_string(sizeof(global_user.user_id.toStdString()))+global_user.user_id.toStdString()+"8"+"register"+
+         string message=to_string(global_user.user_id.toStdString().size())+global_user.user_id.toStdString()+"8"+"register"+
                  to_string(global_user.passwd.length())+global_user.passwd.toStdString();       //支持中文用户注册登录
          qDebug(message.c_str());
          global_user.socket->write(message.c_str(),message.length());

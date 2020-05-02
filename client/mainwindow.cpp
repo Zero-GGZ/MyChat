@@ -42,8 +42,8 @@ void MainWindow::on_pushButton_clicked()    //消息发送按钮
     if(input.length()>0)
     {
 //        QString message=global_user.user_id+':'+global_user.friend_id+':'+input;
-        string input_message=to_string(sizeof(global_user.user_id.toStdString()))+global_user.user_id.toStdString()+"4"+"chat"+
-                to_string(sizeof(global_user.friend_id.toStdString()))+global_user.friend_id.toStdString()+input.toStdString();
+        string input_message=to_string(global_user.user_id.toStdString().size())+global_user.user_id.toStdString()+"4"+"chat"+
+                to_string(global_user.friend_id.toStdString().size())+global_user.friend_id.toStdString()+input.toStdString();
 //        string input_message=message.toStdString();
         global_user.socket->write(input_message.c_str(),input_message.length());
         ui->inputbox->clear();
