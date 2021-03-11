@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets network
 
 TARGET = MyChat
 TEMPLATE = app
-
+RC_ICONS = Time.ico
 
 SOURCES += main.cpp\
         mainwindow.cpp \

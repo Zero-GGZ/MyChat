@@ -29,7 +29,7 @@ void login::socket_Read_Data()
     if(!str.isEmpty())
     {
         qDebug()<<str;
-        //验证登录成功与否,服务器进行密码验证
+//        验证登录成功与否,服务器进行密码验证
         if(str=="login success")    //密码正确
         {
             disconnect(this->dis);
@@ -45,20 +45,22 @@ void login::socket_Read_Data()
 void login::on_login_Button_clicked()
 {
 
-    global_user.user_id=ui->user_id->text();
+    global_user.user_name=ui->user_id->text();
     global_user.passwd=ui->user_passwd->text();
 
-    global_user.socket->connectToHost("106.13.106.106", 8089);    //连接服务器
-//    global_user.socket->connectToHost("192.168.0.104", 8089);    //连接服务器
+//    global_user.socket->connectToHost("106.13.106.106", 8089);    //连接服务器
+    global_user.socket->connectToHost("192.168.123.128", 8089);    //连接服务器
     if (global_user.socket->waitForConnected(200))
     {
-         qDebug("Connected!");
-         string message=to_string(global_user.user_id.toStdString().size())+global_user.user_id.toStdString()+"5"+"login"+
-                 to_string(global_user.passwd.size())+global_user.passwd.toStdString();       //支持中文用户注册登录
-         qDebug(message.c_str());
-         global_user.socket->write(message.c_str(),message.size());
-         qDebug("login successd!");
-         this->dis=connect(global_user.socket, &QTcpSocket::readyRead, this, &login::socket_Read_Data);
+        qDebug("Connected!");
+//         string message=to_string(global_user.user_id.toStdString().size())+global_user.user_id.toStdString()+"5"+"login"+
+//                 to_string(global_user.passwd.size())+global_user.passwd.toStdString();       //支持中文用户注册登录
+        global_user.operation="0";      //‘0’ 表示登录
+        QString message=global_user.ctreat_json_data();
+        qDebug()<<message;
+        global_user.socket->write(message.toStdString().c_str(),message.size());
+        qDebug("login successd!");
+        this->dis=connect(global_user.socket, &QTcpSocket::readyRead, this, &login::socket_Read_Data);
     }
     else
     {

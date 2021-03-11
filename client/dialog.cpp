@@ -45,7 +45,7 @@ void Dialog::socket_Read_Data()
 
 void Dialog::on_register_Button_clicked()
 {
-    global_user.user_id=ui->user_id->text();
+    global_user.user_name=ui->user_id->text();
     global_user.passwd=ui->user_passwd->text();
 
     QString passwd_verify=ui->user_passw_verify->text();
@@ -54,13 +54,13 @@ void Dialog::on_register_Button_clicked()
         ui->register_message->setText("密码不一致");
         return;
     }
-    global_user.socket->connectToHost("106.13.106.106", 8089);    //连接服务器
-//    global_user.socket->connectToHost("192.168.0.104", 8089);    //连接服务器
+//    global_user.socket->connectToHost("106.13.106.106", 8089);    //连接服务器
+    global_user.socket->connectToHost("192.168.123.128", 8089);    //连接服务器
     if (global_user.socket->waitForConnected(200))
     {
          qDebug("Connected!");
          this->dis=connect(global_user.socket, &QTcpSocket::readyRead, this, &Dialog::socket_Read_Data);
-         string message=to_string(global_user.user_id.toStdString().size())+global_user.user_id.toStdString()+"8"+"register"+
+         string message=to_string(global_user.user_name.toStdString().size())+global_user.user_name.toStdString()+"8"+"register"+
                  to_string(global_user.passwd.length())+global_user.passwd.toStdString();       //支持中文用户注册登录
          qDebug(message.c_str());
          global_user.socket->write(message.c_str(),message.length());
