@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>500</width>
-    <height>408</height>
+    <height>457</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <x>10</x>
       <y>40</y>
       <width>361</width>
-      <height>211</height>
+      <height>251</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -33,7 +33,7 @@ font: 75 8pt &quot;Adobe 宋体 Std L&quot;;</string>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>260</y>
+      <y>310</y>
       <width>361</width>
       <height>71</height>
      </rect>
@@ -43,7 +43,7 @@ font: 75 8pt &quot;Adobe 宋体 Std L&quot;;</string>
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>300</y>
+      <y>350</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -97,7 +97,7 @@ font: 75 8pt &quot;Adobe 宋体 Std L&quot;;</string>
       <x>390</x>
       <y>40</y>
       <width>101</width>
-      <height>211</height>
+      <height>111</height>
      </rect>
     </property>
    </widget>
@@ -111,10 +111,10 @@ font: 75 8pt &quot;Adobe 宋体 Std L&quot;;</string>
      </rect>
     </property>
     <property name="text">
-     <string>好友ID：</string>
+     <string>目标ID：</string>
     </property>
    </widget>
-   <widget class="QLabel" name="friend_id_number">
+   <widget class="QLabel" name="target_id_number">
     <property name="geometry">
      <rect>
       <x>300</x>
@@ -125,6 +125,55 @@ font: 75 8pt &quot;Adobe 宋体 Std L&quot;;</string>
     </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="add_friend">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>310</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>加好友</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="add_group">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>310</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>加群</string>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="list_group_number">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>180</y>
+      <width>101</width>
+      <height>111</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>160</y>
+      <width>72</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>群列表</string>
     </property>
    </widget>
   </widget>
@@ -143,7 +192,7 @@ font: 75 8pt &quot;Adobe 宋体 Std L&quot;;</string>
      <x>0</x>
      <y>0</y>
      <width>500</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDataAcq">

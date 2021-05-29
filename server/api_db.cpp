@@ -33,8 +33,8 @@ bool db_connect(){
 User db_get_data(string name){
 	if(name.empty())
 		return User();
-	mysqlpp::Query query = conn.query("SELECT * FROM user where name=\""+name+'\"');
-	cout <<query<<endl;
+	mysqlpp::Query query = conn.query("SELECT * FROM User where name=\""+name+'\"');
+	// cout <<query<<endl;
 	mysqlpp::StoreQueryResult res = query.store();
     if (!res) 
     {
@@ -60,7 +60,7 @@ bool db_write_data(int id,string name,string passwd,string friend_id){
 
 //更新用户好友数据
 bool db_write_data(string name,string new_data){
-    mysqlpp::Query query = conn.query("SELECT * FROM user where name=\""+name+'\"');
+    mysqlpp::Query query = conn.query("SELECT * FROM User where name=\""+name+'\"');
     mysqlpp::StoreQueryResult res = query.store();
     if (!res) 
     {
@@ -70,15 +70,17 @@ bool db_write_data(string name,string new_data){
     User row=res[0]; //取一行数据
     User orgin_row=row;
     row.friend_id +=new_data;
-  
+
     query.update(orgin_row,row);
+    // mysqlpp::Query update_query();
+    // update_query.inset("update User set groups_id= "+)
     query.execute( );
     return true;
 }  
-//更新用户客户端连接id数据
-bool db_write_data(string name,int client_id){
-    db_connect();
-    mysqlpp::Query query = conn.query("SELECT * FROM user where name=\""+name+'\"');
+
+bool db_update_friends(string name, string friends){
+    // mysqlpp::Query query = conn.query("SELECT * FROM user where name=\""+name+'\"');
+    mysqlpp::Query query = conn.query("SELECT * FROM User where name=\""+name+'\"');
     mysqlpp::StoreQueryResult res = query.store();
     if (!res) 
     {
@@ -87,7 +89,49 @@ bool db_write_data(string name,int client_id){
     }
     User row=res[0]; //取一行数据
     User orgin_row=row;
-    row.client_id =client_id;
+    row.friend_id += friends+"+";
+    cout <<orgin_row.friend_id<<"   " <<row.friend_id << endl;
+    query.update(orgin_row,row);
+    query.execute( );
+    return true;
+
+}
+bool db_update_groups(string name, string groups){
+    mysqlpp::Query query = conn.query("SELECT * FROM User where name=\""+name+'\"');
+    mysqlpp::StoreQueryResult res = query.store();
+    if (!res) 
+    {
+        cout << "read data from database error"<<endl;
+        return false;
+    }
+    User row=res[0]; //取一行数据
+    User orgin_row=row;
+    
+    row.groups_id += groups+"+";
+    cout <<orgin_row.groups_id<<"   " <<row.groups_id << endl;
+    query.update(orgin_row,row);
+
+    // cout << query << endl;
+  
+
+    query.execute( );
+    return true;    
+
+}
+
+//更新用户客户端连接id数据
+bool db_write_data(string name,int client_id){
+    
+    mysqlpp::Query query = conn.query("SELECT * FROM User where name=\""+name+'\"');
+    mysqlpp::StoreQueryResult res = query.store();
+    if (!res) 
+    {
+        cout << "read data from database error"<<endl;
+        return false;
+    }
+    User row=res[0]; //取一行数据
+    User orgin_row=row;
+    // row.client_id =client_id;
     cout <<client_id<<endl;
     query.update(orgin_row,row);
     query.execute( );

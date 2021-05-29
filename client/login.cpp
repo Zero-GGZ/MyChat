@@ -55,7 +55,7 @@ void login::on_login_Button_clicked()
         qDebug("Connected!");
 //         string message=to_string(global_user.user_id.toStdString().size())+global_user.user_id.toStdString()+"5"+"login"+
 //                 to_string(global_user.passwd.size())+global_user.passwd.toStdString();       //支持中文用户注册登录
-        global_user.operation="0";      //‘0’ 表示登录
+        global_user.operation=ID_Login;      //0 表示登录
         QString message=global_user.ctreat_json_data();
         qDebug()<<message;
         global_user.socket->write(message.toStdString().c_str(),message.size());

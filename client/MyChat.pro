@@ -16,13 +16,16 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     login.cpp \
     common.cpp \
-    dialog.cpp
+    dialog.cpp \
+    add_target_id.cpp
 
 HEADERS  += mainwindow.h \
     login.h \
     common.h \
-    dialog.h
+    dialog.h \
+    add_target_id.h
 
 FORMS    += mainwindow.ui \
     login.ui \
-    dialog.ui
+    dialog.ui \
+    add_target_id.ui
